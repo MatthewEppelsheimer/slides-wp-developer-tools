@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>WordPress Developer Tools</title>
+
+		<meta name="description" content="Professional tools and workflow for using WordPress as an application platform">
+		<meta name="author" content="Matthew Eppelsheimer">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/presentation.css">		
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<!-- Title slide -->
+				<section>
+					<h1>WordPress Developer Tools</h1>
+					<h3>Using WordPress professionally</h3>
+					<p>
+						<small><a href="http://mattheweppelsheimer.com">Matthew Eppelsheimer</a> / <a href="http://twitter.com/mattepp">@mattepp</a></small>
+					</p>
+				</section>
+
+				<!-- Table of Contents -->
+				<section>
+					<h2>I'll cover</h2>
+					<ol>
+						<li>The platform</li>
+						<li>The developer workflow</li>
+						<li>The tools</li>
+						<li>The references</li>
+					</ol>
+					<p>Questions? Ask &rsquo;em when you got &rsquo;em!</p>
+				</section>
+
+				<!-- The Platform -->
+				<section>
+					<h2>Out of the Box</h2>
+					<p>
+						WordPress provides most of the logic you need for a
+						custom application, plus sensible defaults, out of the box.
+					</p>
+					<ul class="fragment">
+						<li>Frameworks</li>
+						<li>Routing</li>
+						<li>User auth</li>
+						<li>User permissions</li>
+						<li>Security</li>
+						<li>Standardized UI</li>
+						<li>Extensibility system</li>
+					</ul>
+				</section>
+				
+				<!-- Frameworks -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## Frameworks
+							
+							```
+							<?php
+								wp_enqueue_script( 'jquery-color' );
+								wp_enqueue_script( 'backbone' );
+							?>
+							```
+							Dozens are packaged by default, including:
+							
+							* jQuery, and family
+							* Underscore.js
+							* Node.js
+							* Backbone.js
+							* <strike>Prototype</strike>
+							* <strike>Scriptaculous</strike>
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Adding your own
+							
+							Using the script registration and enqueuing system
+							
+							```
+							<?php
+								wp_register_script( $handle, $src, $deps, $ver, $in_footer );
+
+								// Enqueuing a library for use later
+								wp_register_script( 'scriptaculous', 'js/scriptaculous.min.js' );
+								
+								// ... and calling it later
+								wp_enqueue_script( 'scriptaculous' );
+								
+								// Registering and enqueing jQuery-dependent
+								// custom code in one command
+								wp_enqueue_script( 
+									'custom-page-code', 
+									'js/custom-page-code.min.js', 
+									array( 'jquery-color' ), 
+									1.0, 
+									true 
+								);
+							?>
+							```
+						</script>
+					</section>
+					
+				</section>
+				
+				<!-- Routing -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							### Routing
+							
+							WordPress...
+							
+							<ul>
+								<li class="fragment">interprets intent from the URI</li>
+								<li class="fragment">then builds a query to get content data</li>
+								<li class="fragment">then loads a template based on the theme template hierarchy.</li>
+							</ul>
+							
+							<p class="fragment">Each of these steps happens out of the box, and each can be modified.</p>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							#### Changing routing
+							
+							* Interpret intent from the URI
+							    * Rewrite endpoints
+							    * Manage query vars
+							* Build a query to get content data
+							    * Modify the query using pre_get_posts
+							* Load a template based on the theme template hierarchy
+								* Custom themes
+								* Add templates to override with specificity
+						</script>
+					</section>
+				</section>
+				
+				<!-- User auth -->
+				<section data-markdown>
+					<script type="text/template">
+						### Users
+						
+						* Secure authentication
+						* Permissions
+						    * Roles
+						    * Capabilities
+					</script>
+				</section>
+				
+				<!-- Security -->
+				<section data-markdown>
+					<script type="text/template">
+						### Security
+						
+						<p class="fragment">Open Source is a security feature.</p>
+
+						<ul class="fragment">
+							
+							<li>Nonces</li>
+							<li>Salted hashes</li>
+							<li>Roles & capabilities system</li>
+							
+						</ul>
+						
+						<div class="fragment">
+						
+							<p>Careful, though.</p>
+
+							<ul>
+								<li>executing arbitrary PHP = rope to hang yourself</li>
+								<li>sanitize inputs, escape outputs</li
+								<li>be wary of plugins</li>
+							</ul>
+						</div>
+					</script>
+				</section>
+				
+				<!-- Standard UI -->
+				<section>
+				
+					<section data-markdown>
+						<script type="text/template">
+							### Standard UI
+							
+							Various kinds of (custom) data automatically inherit standard WordPress UI.
+							
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Posts
+							
+							<img src="images/post.png" />
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Pages
+							
+							<img src="images/page.png" />
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Custom Post Types
+							
+							<img src="images/testimonial.png" />
+						</script>
+					</section>
+
+				</section>
+				
+				<!-- Extensibility -->
+				<section data-markdown>
+					<script type="text/template">
+						### Extensibility through Plugins
+						
+						"Decisions, not options" is the WordPress philosophy, and it's architected with modification in mind. 
+					</script>
+				</section>
+				
+				<!-- Developer Workflow Section -->
+				<section data-markdown>
+					<script type="text/template">
+						## Developer Workflow
+						
+						<p class="fragment">Building blocks for customization</p>
+						
+						<ul class="fragment">
+							<li>Posts for data</li>
+							<li>Themes</li>
+							<li>Custom fields for metadata</li>
+							<li>Taxonomies for relationships</li>
+							<li>The Loop</li>
+							<li>Actions</li>
+							<li>Filters</li>
+						</ul>
+
+					</script>
+				</section>
+
+				<!-- Posts -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## Posts
+							
+							WordPress&rsquo; legacy means data model objects are represented as **posts**. 
+							
+							<p class="fragment">A "page" object is a post with a *post-type* of *page*.</p>
+							
+							<p class="fragment">A "post" (as in blog post) is a post with a *post-type* of *post*.</p>
+							
+							<p class="fragment">Need a new data type? Register a new post type. You'll automatically get:</p>
+							
+							<ul class="fragment">
+								<li>Queryable</li>
+								<li>Admin UI</li>
+								<li>Single and list views</li>
+								<li>Add metadata as needed</li>
+							</ul>
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### Registering a custom post type (CPT)
+							
+							```
+							<?php
+								$args = array(
+									// searchable?
+									// public?
+									// labels to use
+									// capabilities
+									// hierarchical?
+									// ... more ... 
+								);
+								register_post_type( 'taxonomy', $args );
+							?>
+							```
+						</script>
+					</section>
+				</section>
+				
+				<!-- Themes -->
+				<section data-markdown>
+					<script type="text/template">
+						## Themes
+						
+						WordPress&rsquo; templating and skinning system.
+						
+						The power is in the **<a href="http://codex.wordpress.org/images/1/18/Template_Hierarchy.png">template hierarchy</a>**.
+					</script>
+				</section>
+
+				<!-- Taxonomies -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## Taxonomies
+							
+							Use taxonomies to classify data&#42; and build relationships between data objects.
+							
+							<small>&#42;posts</small>
+							
+						</script>	
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### Taxonomies por ejemplo
+							
+							<img src="images/liquid-ends.png" />							
+						</script>	
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### Posts 2 Posts
+							
+							**Posts 2 Posts** is a free plugin that allows you to define abstract relationships between post types, and define many-to-many relationships between specific posts.
+						</script>	
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							### Posts 2 Posts por ejemplo
+							
+							<img src="images/vendor-single.png" />
+						</script>	
+					</section>
+				</section>
+
+				<!-- The Loop -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## The Loop
+							
+							Every template can do this:
+							
+							```
+							<?php 
+								if ( have_posts() ) {
+									while ( have_posts() ) {
+										the_post(); 
+										//
+										// Post Content here
+										//
+									} // end while
+								} // end if
+							?>
+							```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## The Loop
+							
+							Multiple loops:
+							
+							```
+							<?php
+								$my_query = new WP_Query('category_name=featured&posts_per_page=1');
+								
+								if ( $my_query->have_posts() ) {
+									while ( $my_query->have_posts() ) {
+										$my_query->the_post();
+										//
+										// Post content here
+										//
+									}
+								}
+							?>
+							```
+							
+						</script>
+					</section>
+				</section>
+
+				<!-- Actions -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## Actions
+							
+							Example: 
+							
+							```
+							<?php
+								/*
+								 * Extend tinymce to the excerpt editor
+								 *
+								 * @kudos http://haet.at/add-tinymce-editor-wordpress-excerpt-field/
+								 */
+								
+								function tinymce_excerpt_js(){ 
+									// Do stuff
+								}
+								add_action( 'admin_head-post.php', 'tinymce_excerpt_js');
+								add_action( 'admin_head-post-new.php', 'tinymce_excerpt_js');
+							?>
+							```
+							
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## Actions
+							
+							Actions are everywhere.
+							
+							```							
+								init
+								pre_get_posts
+								wp_enqueue_scripts
+								wp_head
+								wp_footer
+							```
+								
+						</script>
+					</section>
+				</section>
+				
+				<!-- Filters -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## Filters
+							
+							Example: 
+							
+							```
+							<?php
+								/**
+								 * Add search item to global nav menu
+								 */
+								
+								function fpump_add_search_item( $input, $args ) {
+									$output = $input;
+									if ( $args->theme_location == 'primary' ) {
+										// this is to fix a known bug in get_search_form
+										ob_start();
+										get_search_form();
+										$form = ob_get_contents();
+										ob_clean();
+										$li = "<li id='search-menu-item'><a href='#'>Search</a>" . $form . "</li>";
+										$output .= $li;
+										
+									}
+									return $output;
+								}
+								
+								add_filter( 'wp_nav_menu_items', 'fpump_add_search_item', 10, 2 );
+								
+								/*
+								
+								$class = apply_filters( 'class_name', 'foo' );
+								
+							?>
+							```
+
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## Actions
+							
+							Filters are everywhere.
+							
+							```							
+							<?php
+								/*
+								Plugin Name: Blastoff
+								*/
+								
+								function blastoff_version ( $content ) {
+									global $wp_version;
+								
+									$test_version = '3.2.1';		
+									if ( $wp_version == $test_version ) {
+										return str_replace( $test_version, $test_version . ' ...<em>Blastoff!</em>', $content );
+									}
+								
+									return $content;
+								
+								}
+								
+								add_filter( 'update_footers', 'blastoff_version', 11 );
+							?>
+							```
+								
+						</script>
+					</section>
+				</section>
+
+				
+				<!-- Tools -->
+				<section data-markdown>
+					<script type="text/template">
+						## Tools
+						
+						* IDEs — NetBeans, PHPStorm
+						* vagrant
+						* wp-cli
+						* developer plugin & the debug bar plugin
+					</script>
+				</section>
+				
+				<!-- References -->
+				<section data-markdown>
+					<script type="text/template">
+						## Reference Material
+
+						* Google
+						* <a href="http://codex.wordpress.com/">codex.wordpress.com</a>
+						* grep &mdash; aka search in multiple files
+						* <a href="http://wordpress.stackexchange.com">wordpress.stackexchange.com</a>
+						* <a href="http://central.wordcamp.org">wordcamp.org</a>
+						* <a href="http://wordpress.tv">wordpress.tv</a>
+						
+					</script>
+				</section>
+
+				<!-- That's It! -->
+				<section data-markdown>
+					<script type="text/template">
+						# Thank you!
+						
+						Me:
+
+						* www.rocketlift.com
+						* @mattepp
+						
+					</script>
+				</section>
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
